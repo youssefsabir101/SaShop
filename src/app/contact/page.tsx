@@ -67,8 +67,8 @@ export default function ContactPage() {
             {
               icon: Phone,
               title: 'Phone',
-              value: '+20 123 456 7890',
-              link: 'tel:+201234567890'
+              value: '+212 611036342',
+              link: 'tel:+212611036342'
             },
             {
               icon: Mail,
@@ -79,7 +79,7 @@ export default function ContactPage() {
             {
               icon: MapPin,
               title: 'Location',
-              value: 'Cairo, Egypt',
+              value: 'Rabat, Morocco',
               link: '#'
             }
           ].map((contact, index) => {

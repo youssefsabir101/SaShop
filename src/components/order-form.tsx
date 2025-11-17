@@ -140,7 +140,7 @@ export function OrderForm({ product }: OrderFormProps) {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          placeholder="+20 123 456 7890"
+          placeholder="+212 123 456 7890"
           className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
         />
       </div>
@@ -164,7 +164,7 @@ export function OrderForm({ product }: OrderFormProps) {
             Total Price
           </label>
           <div className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-cyan-400 font-bold">
-            {product.price * formData.quantity} EGP
+            {product.price * formData.quantity} MAD
           </div>
         </div>
       </div>

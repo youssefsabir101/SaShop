@@ -46,7 +46,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-cyan-400" />
-                <a href="tel:+201234567890" className="hover:text-cyan-400 transition-colors">+20 123 456 7890</a>
+                <a href="tel:+201234567890" className="hover:text-cyan-400 transition-colors">+212 611036342</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-cyan-400" />
@@ -54,7 +54,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-cyan-400" />
-                <span>Cairo, Egypt</span>
+                <span>Rabat, Morocco</span>
               </li>
             </ul>
           </div>

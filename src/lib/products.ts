@@ -17,7 +17,7 @@ export const products: Product[] = [
     id: '1',
     name: 'Neon Pink Love Sign',
     category: 'signs',
-    price: 450,
+    price: 399, // converted price from EGP to MAD
     description: 'Beautiful glowing pink love sign perfect for bedrooms and romantic spaces',
     image: '/neon-pink-love-sign.png',
     images: ['/neon-pink-love-sign.png'],
@@ -34,7 +34,7 @@ export const products: Product[] = [
     id: '2',
     name: 'Cyan Neon Room Light',
     category: 'tubes',
-    price: 550,
+    price: 599, // converted price from EGP to MAD
     description: 'Vibrant cyan neon tube lighting for ambient room atmosphere',
     image: '/cyan-neon-room-light.png',
     images: ['/cyan-neon-room-light.png'],
@@ -51,7 +51,7 @@ export const products: Product[] = [
     id: '3',
     name: 'Purple Star Neon Sign',
     category: 'signs',
-    price: 380,
+    price: 329, // converted price from EGP to MAD
     description: 'Decorative star-shaped neon sign in stunning purple',
     image: '/neon-purple-star-sign.png',
     images: ['/neon-purple-star-sign.png'],
@@ -68,7 +68,7 @@ export const products: Product[] = [
     id: '4',
     name: 'Rainbow Flex Tube Light',
     category: 'tubes',
-    price: 620,
+    price: 259, // converted price from EGP to MAD
     description: 'Multi-color flexible neon tube for creative installations',
     image: '/neon-rainbow-flex-tube-light.png',
     images: ['/neon-rainbow-flex-tube-light.png'],
@@ -85,7 +85,7 @@ export const products: Product[] = [
     id: '5',
     name: 'Blue Fire Neon Text Sign',
     category: 'signs',
-    price: 500,
+    price: 759, // converted price from EGP to MAD
     description: 'Custom text neon sign with intense blue fire effect',
     image: '/neon-blue-fire-text-sign.png',
     images: ['/neon-blue-fire-text-sign.png'],
@@ -102,7 +102,7 @@ export const products: Product[] = [
     id: '6',
     name: 'Pink Marble Lamp',
     category: 'lamps',
-    price: 480,
+    price: 399, // converted price from EGP to MAD
     description: 'Elegant marble base lamp with soft pink neon glow',
     image: '/neon-pink-marble-lamp-decorative.png',
     images: ['/neon-pink-marble-lamp-decorative.png'],

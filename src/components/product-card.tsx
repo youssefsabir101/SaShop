@@ -13,12 +13,13 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/products/${product.id}`}>
       <div className="group h-full cursor-pointer">
-        <div className="relative h-64 sm:h-56 md:h-64 overflow-hidden rounded-lg bg-slate-900 border border-slate-800 group-hover:border-cyan-500 transition-all duration-300">
+        <div className="relative overflow-hidden rounded-lg bg-slate-900 border border-slate-800 group-hover:border-cyan-500 transition-all duration-300">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.name}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-300"
+            width={500}
+            height={400}
+            className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
             unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
@@ -50,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex items-center justify-between pt-4 border-t border-slate-800">
             <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-400">
-              {product.price} EGP
+              {product.price} MAD
             </span>
             <span className="text-xs font-bold px-2 py-1 bg-slate-800 text-cyan-400 rounded">
               In Stock

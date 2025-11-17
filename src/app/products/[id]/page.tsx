@@ -52,7 +52,7 @@ export default async function ProductDetailPage({
 
             <div>
               <p className="text-3xl font-black text-cyan-400 mb-4">
-                {product.price} EGP
+                {product.price} MAD
               </p>
               <p className="text-lg text-slate-300 leading-relaxed">
                 {product.description}

@@ -1,6 +1,5 @@
 import { CheckCircle, Award, Zap } from 'lucide-react'
 import Image from 'next/image'
-import img1 from "@/imgs/neon-led-store-owner-working.png"
 
 export const metadata = {
   title: 'About SaShop - Premium Neon LED Decorations',
@@ -40,7 +39,7 @@ export default function AboutPage() {
 
           <div className="rounded-lg overflow-hidden border border-slate-800">
             <Image
-              src="/sabcoding-logo.png"
+              src="/neon-led-store-owner-working.png"
               alt="SaShop team working"
               width={600}
               height={400}
