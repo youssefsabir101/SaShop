@@ -1,25 +1,25 @@
 // Update these with your actual Google Form entry IDs
 const GOOGLE_FORMS_CONFIG = {
   order: {
-    formId: 'YOUR_ORDER_FORM_ID_HERE',
+    formId: '1FAIpQLSehykP2F8XG-aI0KGnW8O57t04x9kdq5TPsSOosWAo51eCf1Q',
     entries: {
-      fullName: 'entry.XXXXX1',
-      email: 'entry.XXXXX2',
-      phone: 'entry.XXXXX3',
-      productName: 'entry.XXXXX4',
-      quantity: 'entry.XXXXX5',
-      totalPrice: 'entry.XXXXX6',
-      address: 'entry.XXXXX7',
+      fullName: 'entry.1144702813',
+      email: 'entry.849742991',
+      phone: 'entry.59071613',
+      productName: 'entry.964150792',
+      quantity: 'entry.198823292',
+      totalPrice: 'entry.1027556372',
+      address: 'entry.2134109441',
     }
   },
   contact: {
-    formId: 'YOUR_CONTACT_FORM_ID_HERE',
+    formId: '1FAIpQLSedwpIJj6r4RziAE7140UvpPPKOf7cjCNxW0ubnUHkmyeMA3g',
     entries: {
-      fullName: 'entry.XXXXX1',
-      email: 'entry.XXXXX2',
-      phone: 'entry.XXXXX3',
-      subject: 'entry.XXXXX4',
-      message: 'entry.XXXXX5',
+      fullName: 'entry.1976625530',
+      email: 'entry.1575659615',
+      phone: 'entry.1677825737',
+      subject: 'entry.1567701882',
+      message: 'entry.33884328',
     }
   }
 }
