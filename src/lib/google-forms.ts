@@ -1,25 +1,25 @@
 // Update these with your actual Google Form entry IDs
 const GOOGLE_FORMS_CONFIG = {
   order: {
-    formId: '1FAIpQLSehykP2F8XG-aI0KGnW8O57t04x9kdq5TPsSOosWAo51eCf1Q',
+    formId: '1FAIpQLSf79aNZGdjcJVEhhO1p9fsrmewa8j6nZcsg-kaZadfa4pDUkA',
     entries: {
-      fullName: 'entry.1144702813',
-      email: 'entry.849742991',
-      phone: 'entry.59071613',
-      productName: 'entry.964150792',
-      quantity: 'entry.198823292',
-      totalPrice: 'entry.1027556372',
-      address: 'entry.2134109441',
+      fullName: 'entry.1181491362',
+      email: 'entry.1615706603',
+      phone: 'entry.448040917',
+      productName: 'entry.1491776181',
+      quantity: 'entry.1907570498',
+      totalPrice: 'entry.1161999179',
+      address: 'entry.2023113311',
     }
   },
   contact: {
-    formId: '1FAIpQLSedwpIJj6r4RziAE7140UvpPPKOf7cjCNxW0ubnUHkmyeMA3g',
+    formId: '1FAIpQLSddDTpSIFRiWru85IENiFhLMt914Qe7GXOjbAUjN3ycCLFddA',
     entries: {
-      fullName: 'entry.1976625530',
-      email: 'entry.1575659615',
-      phone: 'entry.1677825737',
-      subject: 'entry.1567701882',
-      message: 'entry.33884328',
+      fullName: 'entry.1399187055',
+      email: 'entry.2130208457',
+      phone: 'entry.1474697617',
+      subject: 'entry.1439950613',
+      message: 'entry.1566455217',
     }
   }
 }
@@ -54,7 +54,7 @@ export async function submitOrderToGoogleForm(data: OrderData): Promise<void> {
   formData.append(GOOGLE_FORMS_CONFIG.order.entries.address, data.address)
 
   const response = await fetch(
-    `https://docs.google.com/forms/d/${GOOGLE_FORMS_CONFIG.order.formId}/formResponse`,
+    `https://docs.google.com/forms/d/e/${GOOGLE_FORMS_CONFIG.order.formId}/formResponse`,
     {
       method: 'POST',
       body: formData,
@@ -77,7 +77,7 @@ export async function submitContactToGoogleForm(data: ContactData): Promise<void
   formData.append(GOOGLE_FORMS_CONFIG.contact.entries.message, data.message)
 
   const response = await fetch(
-    `https://docs.google.com/forms/d/${GOOGLE_FORMS_CONFIG.contact.formId}/formResponse`,
+    `https://docs.google.com/forms/d/e/${GOOGLE_FORMS_CONFIG.contact.formId}/formResponse`,
     {
       method: 'POST',
       body: formData,
