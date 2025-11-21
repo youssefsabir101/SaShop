@@ -2,9 +2,72 @@
 
 import { useState } from 'react'
 import { submitContactToGoogleForm } from '@/lib/google-forms'
-import { Mail, Phone, MapPin, Loader2, CheckCircle } from 'lucide-react'
+import { Mail, Phone, MapPin, Loader2, CheckCircle, Send, MessageCircle, User } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
+
+// Translations
+const translations = {
+  heroTitle: {
+    fr: "Contactez-Nous",
+    ar: "اتصل بنا"
+  },
+  heroSubtitle: {
+    fr: "Prêt à illuminer votre espace ? Parlons de votre projet néon",
+    ar: "مستعد لإضاءة مساحتك؟ لنتحدث عن مشروع النيون الخاص بك"
+  },
+  contactInfo: {
+    phone: {
+      title: { fr: "Téléphone", ar: "هاتف" },
+      value: "+212 611036342"
+    },
+    email: {
+      title: { fr: "Email", ar: "البريد الإلكتروني" },
+      value: "contact@neonglow.com"
+    },
+    location: {
+      title: { fr: "Localisation", ar: "الموقع" },
+      value: { fr: "Casablanca, Maroc", ar: "الدار البيضاء، المغرب" }
+    }
+  },
+  form: {
+    title: {
+      fr: "Envoyez-nous un Message",
+      ar: "أرسل لنا رسالة"
+    },
+    labels: {
+      fullName: { fr: "Nom Complet *", ar: "الاسم الكامل *" },
+      email: { fr: "Email *", ar: "البريد الإلكتروني *" },
+      phone: { fr: "Téléphone *", ar: "الهاتف *" },
+      subject: { fr: "Sujet", ar: "الموضوع" },
+      message: { fr: "Message *", ar: "الرسالة *" }
+    },
+    placeholders: {
+      fullName: { fr: "Votre nom", ar: "اسمك" },
+      email: { fr: "votre@email.com", ar: "بريدك@الإلكتروني.com" },
+      phone: { fr: "+212 123 456", ar: "212 123 456+" },
+      subject: { fr: "Comment pouvons-nous vous aider ?", ar: "كيف يمكننا مساعدتك؟" },
+      message: { fr: "Votre message...", ar: "رسالتك..." }
+    },
+    submit: {
+      sending: { fr: "Envoi en cours...", ar: "جاري الإرسال..." },
+      send: { fr: "Envoyer le Message", ar: "إرسال الرسالة" }
+    },
+    success: {
+      fr: "Message envoyé avec succès ! Nous vous répondrons bientôt.",
+      ar: "تم إرسال الرسالة بنجاح! سنرد عليك قريبًا."
+    },
+    errors: {
+      name: { fr: "Veuillez entrer votre nom", ar: "يرجى إدخال اسمك" },
+      email: { fr: "Veuillez entrer votre email", ar: "يرجى إدخال بريدك الإلكتروني" },
+      phone: { fr: "Veuillez entrer votre téléphone", ar: "يرجى إدخال هاتفك" },
+      message: { fr: "Veuillez entrer votre message", ar: "يرجى إدخال رسالتك" },
+      generic: { fr: "Échec de l'envoi du message", ar: "فشل في إرسال الرسالة" }
+    }
+  }
+}
 
 export default function ContactPage() {
+  const { language } = useLanguage()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -30,10 +93,10 @@ export default function ContactPage() {
     setIsLoading(true)
 
     try {
-      if (!formData.fullName.trim()) throw new Error('Please enter your name')
-      if (!formData.email.trim()) throw new Error('Please enter your email')
-      if (!formData.phone.trim()) throw new Error('Please enter your phone')
-      if (!formData.message.trim()) throw new Error('Please enter your message')
+      if (!formData.fullName.trim()) throw new Error(translations.form.errors.name[language])
+      if (!formData.email.trim()) throw new Error(translations.form.errors.email[language])
+      if (!formData.phone.trim()) throw new Error(translations.form.errors.phone[language])
+      if (!formData.message.trim()) throw new Error(translations.form.errors.message[language])
 
       await submitContactToGoogleForm({
         fullName: formData.fullName,
@@ -48,146 +111,274 @@ export default function ContactPage() {
 
       setTimeout(() => setIsSuccess(false), 5000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send message')
+      setError(err instanceof Error ? err.message : translations.form.errors.generic[language])
     } finally {
       setIsLoading(false)
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 pt-24 pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-400 text-center mb-12">
-          Contact Us
-        </h1>
+  // Helper function to get translated text
+  const t = (key: keyof typeof translations) => {
+    const translation = translations[key]
+    if (typeof translation === 'object' && 'fr' in translation && 'ar' in translation) {
+      return translation[language]
+    }
+    return (translation as any).fr
+  }
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-          {/* Contact Info */}
+  const tContact = (key: keyof typeof translations.contactInfo) => {
+    const contact = translations.contactInfo[key]
+    return {
+      title: contact.title[language],
+      value: typeof contact.value === 'string' ? contact.value : contact.value[language]
+    }
+  }
+
+  const tForm = (section: keyof typeof translations.form.labels, key?: string) => {
+    if (key) {
+      return translations.form[section][key][language]
+    }
+    return translations.form[section][language]
+  }
+
+  return (
+    <div className="min-h-screen bg-black pt-20 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      {/* Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-float-medium"></div>
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float-fast"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        {/* Hero Section */}
+        <div className="text-center mb-16 space-y-6">
+          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black mb-6 leading-none">
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
+              CONTACT
+            </span>
+          </h1>
+          <p className="text-2xl sm:text-3xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            {t('heroSubtitle')}
+          </p>
+        </div>
+
+        {/* Contact Info Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
           {[
             {
               icon: Phone,
-              title: 'Phone',
-              value: '+212 611036342',
+              key: 'phone' as keyof typeof translations.contactInfo,
+              gradient: 'from-cyan-500 to-blue-500',
               link: 'tel:+212611036342'
             },
             {
               icon: Mail,
-              title: 'Email',
-              value: 'info@sashop.com',
-              link: 'mailto:info@sashop.com'
+              key: 'email' as keyof typeof translations.contactInfo,
+              gradient: 'from-purple-500 to-pink-500',
+              link: 'mailto:contact@neonglow.com'
             },
             {
               icon: MapPin,
-              title: 'Location',
-              value: 'Rabat, Morocco',
+              key: 'location' as keyof typeof translations.contactInfo,
+              gradient: 'from-pink-500 to-red-500',
               link: '#'
             }
           ].map((contact, index) => {
             const IconComponent = contact.icon
+            const contactInfo = tContact(contact.key)
+            
             return (
-              <a key={index} href={contact.link} className="p-6 bg-slate-900 border border-slate-800 rounded-lg hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 transition-all text-center">
-                <IconComponent className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-slate-100 mb-2">{contact.title}</h3>
-                <p className="text-slate-400">{contact.value}</p>
+              <a
+                key={index}
+                href={contact.link}
+                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl backdrop-blur-sm border border-white/10 hover:border-cyan-400/50 transition-all duration-500 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 text-center">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${contact.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                    <IconComponent className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">{contactInfo.title}</h3>
+                  <p className="text-gray-300 text-lg">{contactInfo.value}</p>
+                </div>
               </a>
             )
           })}
         </div>
 
-        <div className="max-w-2xl mx-auto">
-          <div className="p-8 bg-slate-900 border border-slate-800 rounded-lg">
-            <h2 className="text-2xl font-bold text-slate-100 mb-6">Send us a Message</h2>
-
-            {isSuccess && (
-              <div className="mb-6 p-4 bg-green-900/20 border border-green-800 rounded-lg flex items-center gap-3 animate-fade-in">
-                <CheckCircle className="w-5 h-5 text-green-400" />
-                <p className="text-green-400">Message sent successfully! We'll get back to you soon.</p>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-slate-200 mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-200 mb-2">Email *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                  />
+        {/* Contact Form Section */}
+        <div className="max-w-4xl mx-auto">
+          <div className="relative p-8 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl backdrop-blur-sm border border-white/10">
+            {/* Decorative Elements */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute bottom-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
+            
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-8 h-8 text-white" />
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-200 mb-2">Phone *</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+20 123 456"
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                  />
-                </div>
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+                  {tForm('title')}
+                </h2>
+                <p className="text-gray-400 text-lg">
+                  {language === 'fr' 
+                    ? "Remplissez le formulaire et nous vous répondrons dans les plus brefs délais"
+                    : "املأ النموذج وسنرد عليك في أقرب وقت ممكن"
+                  }
+                </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-slate-200 mb-2">Subject</label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder="How can we help?"
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-slate-200 mb-2">Message *</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your message..."
-                  rows={5}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 resize-none"
-                />
-              </div>
-
-              {error && (
-                <div className="p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
-                  {error}
+              {isSuccess && (
+                <div className="mb-6 p-4 bg-green-900/20 border border-green-800 rounded-2xl flex items-center gap-3 animate-fade-in backdrop-blur-sm">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <p className="text-green-400">{tForm('success')}</p>
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 disabled:opacity-50 text-slate-950 font-bold rounded-lg transition-all flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  'Send Message'
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    {/* Full Name */}
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-3">
+                        {tForm('labels', 'fullName')}
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
+                        <input
+                          type="text"
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleChange}
+                          placeholder={tForm('placeholders', 'fullName')}
+                          className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-3">
+                        {tForm('labels', 'email')}
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder={tForm('placeholders', 'email')}
+                          className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-3">
+                        {tForm('labels', 'phone')}
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder={tForm('placeholders', 'phone')}
+                          className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-3">
+                        {tForm('labels', 'subject')}
+                      </label>
+                      <input
+                        type="text"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        placeholder={tForm('placeholders', 'subject')}
+                        className="w-full px-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
+                      />
+                    </div>
+
+                    <div className="flex-1">
+                      <label className="block text-sm font-bold text-white mb-3">
+                        {tForm('labels', 'message')}
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder={tForm('placeholders', 'message')}
+                        rows={8}
+                        className="w-full px-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 resize-none backdrop-blur-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="p-4 bg-red-900/20 border border-red-800 rounded-2xl text-red-400 text-sm backdrop-blur-sm">
+                    {error}
+                  </div>
                 )}
-              </button>
-            </form>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="group relative w-full py-5 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 disabled:opacity-50 text-white font-bold rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500" />
+                  <span className="relative z-10 flex items-center gap-3">
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        {tForm('submit', 'sending')}
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {tForm('submit', 'send')}
+                      </>
+                    )}
+                  </span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Info */}
+        <div className="text-center mt-16">
+          <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-3xl p-8 backdrop-blur-sm">
+            <h3 className="text-2xl font-bold text-white mb-4">
+              {language === 'fr' 
+                ? "Heures d'Ouverture" 
+                : "ساعات العمل"
+              }
+            </h3>
+            <p className="text-gray-300 text-lg mb-2">
+              {language === 'fr' 
+                ? "Lundi - Vendredi: 9h00 - 18h00" 
+                : "الإثنين - الجمعة: 9:00 - 18:00"
+              }
+            </p>
+            <p className="text-gray-300 text-lg">
+              {language === 'fr' 
+                ? "Samedi - Dimanche: 10h00 - 16h00" 
+                : "السبت - الأحد: 10:00 - 16:00"
+              }
+            </p>
           </div>
         </div>
       </div>
