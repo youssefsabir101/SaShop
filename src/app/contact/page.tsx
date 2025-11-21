@@ -5,8 +5,66 @@ import { submitContactToGoogleForm } from '@/lib/google-forms'
 import { Mail, Phone, MapPin, Loader2, CheckCircle, Send, MessageCircle, User } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
-// Translations
-const translations = {
+// Define proper TypeScript interfaces
+interface TranslationText {
+  fr: string;
+  ar: string;
+}
+
+interface ContactInfo {
+  title: TranslationText;
+  value: string | TranslationText;
+}
+
+interface FormLabels {
+  fullName: TranslationText;
+  email: TranslationText;
+  phone: TranslationText;
+  subject: TranslationText;
+  message: TranslationText;
+}
+
+interface FormPlaceholders {
+  fullName: TranslationText;
+  email: TranslationText;
+  phone: TranslationText;
+  subject: TranslationText;
+  message: TranslationText;
+}
+
+interface FormSubmit {
+  sending: TranslationText;
+  send: TranslationText;
+}
+
+interface FormErrors {
+  name: TranslationText;
+  email: TranslationText;
+  phone: TranslationText;
+  message: TranslationText;
+  generic: TranslationText;
+}
+
+interface Translations {
+  heroTitle: TranslationText;
+  heroSubtitle: TranslationText;
+  contactInfo: {
+    phone: ContactInfo;
+    email: ContactInfo;
+    location: ContactInfo;
+  };
+  form: {
+    title: TranslationText;
+    labels: FormLabels;
+    placeholders: FormPlaceholders;
+    submit: FormSubmit;
+    success: TranslationText;
+    errors: FormErrors;
+  };
+}
+
+// Translations with proper typing
+const translations: Translations = {
   heroTitle: {
     fr: "Contactez-Nous",
     ar: "اتصل بنا"
@@ -118,27 +176,33 @@ export default function ContactPage() {
   }
 
   // Helper function to get translated text
-  const t = (key: keyof typeof translations) => {
+  const t = (key: keyof Translations): string => {
     const translation = translations[key]
     if (typeof translation === 'object' && 'fr' in translation && 'ar' in translation) {
-      return translation[language]
+      return (translation as TranslationText)[language]
     }
-    return (translation as any).fr
+    return (translation as any).fr // Fallback
   }
 
-  const tContact = (key: keyof typeof translations.contactInfo) => {
+  const tContact = (key: keyof typeof translations.contactInfo): { title: string; value: string } => {
     const contact = translations.contactInfo[key]
     return {
       title: contact.title[language],
-      value: typeof contact.value === 'string' ? contact.value : contact.value[language]
+      value: typeof contact.value === 'string' ? contact.value : (contact.value as TranslationText)[language]
     }
   }
 
-  const tForm = (section: keyof typeof translations.form.labels, key?: string) => {
-    if (key) {
-      return translations.form[section][key][language]
-    }
-    return translations.form[section][language]
+  // Fixed helper functions with proper typing
+  const tFormLabel = (key: keyof FormLabels): string => {
+    return translations.form.labels[key][language]
+  }
+
+  const tFormPlaceholder = (key: keyof FormPlaceholders): string => {
+    return translations.form.placeholders[key][language]
+  }
+
+  const tFormSubmit = (key: keyof FormSubmit): string => {
+    return translations.form.submit[key][language]
   }
 
   return (
@@ -220,7 +284,7 @@ export default function ContactPage() {
                   <MessageCircle className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-                  {tForm('title')}
+                  {translations.form.title[language]}
                 </h2>
                 <p className="text-gray-400 text-lg">
                   {language === 'fr' 
@@ -233,7 +297,7 @@ export default function ContactPage() {
               {isSuccess && (
                 <div className="mb-6 p-4 bg-green-900/20 border border-green-800 rounded-2xl flex items-center gap-3 animate-fade-in backdrop-blur-sm">
                   <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                  <p className="text-green-400">{tForm('success')}</p>
+                  <p className="text-green-400">{translations.form.success[language]}</p>
                 </div>
               )}
 
@@ -243,7 +307,7 @@ export default function ContactPage() {
                     {/* Full Name */}
                     <div>
                       <label className="block text-sm font-bold text-white mb-3">
-                        {tForm('labels', 'fullName')}
+                        {tFormLabel('fullName')}
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
@@ -252,7 +316,7 @@ export default function ContactPage() {
                           name="fullName"
                           value={formData.fullName}
                           onChange={handleChange}
-                          placeholder={tForm('placeholders', 'fullName')}
+                          placeholder={tFormPlaceholder('fullName')}
                           className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
                         />
                       </div>
@@ -261,7 +325,7 @@ export default function ContactPage() {
                     {/* Email */}
                     <div>
                       <label className="block text-sm font-bold text-white mb-3">
-                        {tForm('labels', 'email')}
+                        {tFormLabel('email')}
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
@@ -270,7 +334,7 @@ export default function ContactPage() {
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder={tForm('placeholders', 'email')}
+                          placeholder={tFormPlaceholder('email')}
                           className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
                         />
                       </div>
@@ -279,7 +343,7 @@ export default function ContactPage() {
                     {/* Phone */}
                     <div>
                       <label className="block text-sm font-bold text-white mb-3">
-                        {tForm('labels', 'phone')}
+                        {tFormLabel('phone')}
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
@@ -288,7 +352,7 @@ export default function ContactPage() {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder={tForm('placeholders', 'phone')}
+                          placeholder={tFormPlaceholder('phone')}
                           className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
                         />
                       </div>
@@ -299,27 +363,27 @@ export default function ContactPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-white mb-3">
-                        {tForm('labels', 'subject')}
+                        {tFormLabel('subject')}
                       </label>
                       <input
                         type="text"
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        placeholder={tForm('placeholders', 'subject')}
+                        placeholder={tFormPlaceholder('subject')}
                         className="w-full px-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
                       />
                     </div>
 
                     <div className="flex-1">
                       <label className="block text-sm font-bold text-white mb-3">
-                        {tForm('labels', 'message')}
+                        {tFormLabel('message')}
                       </label>
                       <textarea
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
-                        placeholder={tForm('placeholders', 'message')}
+                        placeholder={tFormPlaceholder('message')}
                         rows={8}
                         className="w-full px-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 resize-none backdrop-blur-sm"
                       />
@@ -343,12 +407,12 @@ export default function ContactPage() {
                     {isLoading ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        {tForm('submit', 'sending')}
+                        {tFormSubmit('sending')}
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        {tForm('submit', 'send')}
+                        {tFormSubmit('send')}
                       </>
                     )}
                   </span>
