@@ -249,7 +249,7 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const sliderRef = useRef<NodeJS.Timeout>()
+  const sliderRef = useRef<NodeJS.Timeout | null>(null) // FIXED: Added initial value
 
   // Enhanced Showcase content with images and videos
   const showcaseContent = [
@@ -298,7 +298,7 @@ export default function Home() {
   // Trending products (most popular)
   const trendingProducts = products.slice(0, 4)
 
-  useEffect(() => {
+useEffect(() => {
     setIsMounted(true)
     // Simple particle animation
     const canvas = canvasRef.current
@@ -369,7 +369,7 @@ export default function Home() {
     window.addEventListener('resize', handleResize)
     return () => {
       window.removeEventListener('resize', handleResize)
-      if (sliderRef.current) clearInterval(sliderRef.current)
+      if (sliderRef.current) clearInterval(sliderRef.current) // FIXED: Check for null
     }
   }, [isPlaying, showcaseContent.length])
 
