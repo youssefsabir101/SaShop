@@ -58,7 +58,12 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'default' | 'name' | 'price' | 'newest'>('default')
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Ensure we're mounted to avoid hydration issues
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Helper function to get translated text
   const t = (key: keyof typeof translations) => {
@@ -70,27 +75,32 @@ export default function ProductsPage() {
   }
 
   const tCategory = (category: string) => {
-    return translations.categories[category as keyof typeof translations.categories]?.[language] || 
-           category.charAt(0).toUpperCase() + category.slice(1)
+    const categoryTranslation = translations.categories[category as keyof typeof translations.categories]
+    return categoryTranslation?.[language] || category.charAt(0).toUpperCase() + category.slice(1)
   }
 
-  // Filter and sort products - FIXED: Removed createdAt since it doesn't exist
-  const filteredProducts = products
+  // Safe products filtering with null checks
+  const filteredProducts = (products || [])
     .filter(product => {
+      if (!product) return false
+      
       const matchesCategory = activeCategory === 'all' || product.category === activeCategory
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesSearch = 
+        product.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      
       return matchesCategory && matchesSearch
     })
     .sort((a, b) => {
+      if (!a || !b) return 0
+      
       switch (sortBy) {
         case 'name':
-          return a.name.localeCompare(b.name)
+          return (a.name || '').localeCompare(b.name || '')
         case 'price':
-          return a.price - b.price
+          return (a.price || 0) - (b.price || 0)
         case 'newest':
-          // Since createdAt doesn't exist, use product ID or name for consistent ordering
-          return a.id.localeCompare(b.id)
+          return (a.id || '').localeCompare(b.id || '')
         default:
           return 0
       }
@@ -100,6 +110,15 @@ export default function ProductsPage() {
   useEffect(() => {
     setSearchQuery('')
   }, [activeCategory])
+
+  // Don't render until mounted to avoid hydration issues
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-black pt-20 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-black pt-20 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -186,7 +205,7 @@ export default function ProductsPage() {
 
           {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-3">
-            {['all', ...categories].map((category) => (
+            {['all', ...(categories || [])].map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
@@ -230,7 +249,7 @@ export default function ProductsPage() {
           }>
             {filteredProducts.map((product, index) => (
               <div
-                key={product.id}
+                key={product?.id || index}
                 className="transform transition-all duration-700 hover:scale-105"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
