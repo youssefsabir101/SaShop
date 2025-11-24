@@ -249,7 +249,8 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const sliderRef = useRef<NodeJS.Timeout | null>(null) // FIXED: Added initial value
+  const sliderRef = useRef<NodeJS.Timeout | null>(null)
+
 
   // Enhanced Showcase content with images and videos
   const showcaseContent = [
@@ -369,7 +370,9 @@ useEffect(() => {
     window.addEventListener('resize', handleResize)
     return () => {
       window.removeEventListener('resize', handleResize)
-      if (sliderRef.current) clearInterval(sliderRef.current) // FIXED: Check for null
+      if (sliderRef.current) {
+        clearInterval(sliderRef.current)
+      }
     }
   }, [isPlaying, showcaseContent.length])
 

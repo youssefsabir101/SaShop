@@ -52,39 +52,34 @@ const translations = {
   }
 }
 
-// 🔥 FIXED TRANSLATION HELPER — Supports nested keys!
-const t = (path: string, language: "fr" | "ar") => {
-  const keys = path.split(".")
-  let value: any = translations
-
-  for (const key of keys) {
-    value = value?.[key]
-    if (!value) return path // fallback
-  }
-
-  return value[language] ?? value
-}
-
 export default function ProductsPage() {
   const { language } = useLanguage()
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'default' | 'name' | 'price' | 'newest'>('default')
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  const tCategory = (category: string) => {
-    return translations.categories[category as keyof typeof translations.categories]?.[language] ||
-      category.charAt(0).toUpperCase() + category.slice(1)
+  // Helper function to get translated text
+  const t = (key: keyof typeof translations) => {
+    const translation = translations[key]
+    if (typeof translation === 'object' && 'fr' in translation && 'ar' in translation) {
+      return translation[language]
+    }
+    return (translation as any).fr
   }
 
-  // Filter and sort products
+  const tCategory = (category: string) => {
+    return translations.categories[category as keyof typeof translations.categories]?.[language] || 
+           category.charAt(0).toUpperCase() + category.slice(1)
+  }
+
+  // Filter and sort products - FIXED: Removed createdAt since it doesn't exist
   const filteredProducts = products
     .filter(product => {
       const matchesCategory = activeCategory === 'all' || product.category === activeCategory
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
-
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           product.description.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesCategory && matchesSearch
     })
     .sort((a, b) => {
@@ -94,20 +89,21 @@ export default function ProductsPage() {
         case 'price':
           return a.price - b.price
         case 'newest':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          // Since createdAt doesn't exist, use product ID or name for consistent ordering
+          return a.id.localeCompare(b.id)
         default:
           return 0
       }
     })
 
+  // Reset search when category changes
   useEffect(() => {
     setSearchQuery('')
   }, [activeCategory])
 
   return (
     <div className="min-h-screen bg-black pt-20 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      
-      {/* Background FX */}
+      {/* Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
         <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-float-medium"></div>
@@ -115,8 +111,7 @@ export default function ProductsPage() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        
-        {/* Hero */}
+        {/* Hero Section */}
         <div className="text-center mb-16 space-y-6">
           <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black mb-6 leading-none">
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
@@ -124,51 +119,50 @@ export default function ProductsPage() {
             </span>
           </h1>
           <p className="text-2xl sm:text-3xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            {t("heroSubtitle", language)}
+            {t('heroSubtitle')}
           </p>
         </div>
 
-        {/* Controls */}
+        {/* Controls Bar */}
         <div className="mb-12 space-y-6">
-          
-          {/* Search */}
+          {/* Search and Filters Row */}
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            
+            {/* Search Bar */}
             <div className="relative flex-1 max-w-2xl w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
               <input
                 type="text"
-                placeholder={t("search.placeholder", language)}
+                placeholder={t('search').placeholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm"
               />
             </div>
 
-            {/* Sort & View */}
+            {/* View Controls */}
             <div className="flex items-center gap-4">
-
-              {/* Sort */}
+              {/* Sort Dropdown */}
               <div className="relative">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="appearance-none bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-white pr-10"
+                  className="appearance-none bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300 backdrop-blur-sm pr-10"
                 >
-                  <option value="default">{t("sort.default", language)}</option>
-                  <option value="name">{t("sort.name", language)}</option>
-                  <option value="price">{t("sort.price", language)}</option>
-                  <option value="newest">{t("sort.newest", language)}</option>
+                  <option value="default">{t('sort').default}</option>
+                  <option value="name">{t('sort').name}</option>
+                  <option value="price">{t('sort').price}</option>
+                  <option value="newest">{t('sort').newest}</option>
                 </select>
-
-                <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cyan-400" />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <Filter className="w-4 h-4 text-cyan-400" />
+                </div>
               </div>
 
-              {/* View */}
-              <div className="flex bg-black/50 border border-white/10 rounded-2xl p-1">
+              {/* View Toggle */}
+              <div className="flex bg-black/50 border border-white/10 rounded-2xl p-1 backdrop-blur-sm">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-xl ${
+                  className={`p-2 rounded-xl transition-all duration-300 ${
                     viewMode === 'grid'
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
                       : 'text-gray-400 hover:text-white'
@@ -176,10 +170,9 @@ export default function ProductsPage() {
                 >
                   <Grid className="w-5 h-5" />
                 </button>
-
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-xl ${
+                  className={`p-2 rounded-xl transition-all duration-300 ${
                     viewMode === 'list'
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
                       : 'text-gray-400 hover:text-white'
@@ -188,65 +181,120 @@ export default function ProductsPage() {
                   <List className="w-5 h-5" />
                 </button>
               </div>
-
             </div>
-
           </div>
 
-          {/* Categories */}
+          {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-3">
             {['all', ...categories].map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`group relative px-6 py-3 rounded-2xl font-semibold ${
+                className={`group relative px-6 py-3 rounded-2xl font-semibold transition-all duration-500 ${
                   activeCategory === category
-                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-xl'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10'
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl shadow-cyan-500/30 scale-105'
+                    : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}
               >
                 <span className="relative z-10 flex items-center gap-2">
                   {activeCategory === category && <Sparkles className="w-4 h-4" />}
                   {tCategory(category)}
                 </span>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
               </button>
             ))}
           </div>
-
         </div>
 
         {/* Results Count */}
         <div className="flex items-center justify-between mb-8">
           <p className="text-gray-400">
-            <span className="text-cyan-400 font-bold">{filteredProducts.length}</span>{" "}
-            {t("results.found", language)}
+            <span className="text-cyan-400 font-bold">{filteredProducts.length}</span> {t('results').found}
           </p>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="text-sm text-gray-400 hover:text-cyan-400 transition-colors"
+            >
+              {language === 'fr' ? 'Effacer la recherche' : 'مسح البحث'}
+            </button>
+          )}
         </div>
 
-        {/* Products */}
+        {/* Products Grid/List */}
         {filteredProducts.length > 0 ? (
           <div className={
             viewMode === 'grid'
               ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
               : 'space-y-6'
           }>
-            {filteredProducts.map((product) => (
-              <ProductCard 
+            {filteredProducts.map((product, index) => (
+              <div
                 key={product.id}
-                product={product}
-                layout={viewMode === 'list' ? 'horizontal' : 'vertical'}
-              />
+                className="transform transition-all duration-700 hover:scale-105"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <ProductCard 
+                  product={product} 
+                  layout={viewMode === 'list' ? 'horizontal' : 'vertical'}
+                />
+              </div>
             ))}
           </div>
         ) : (
+          /* Empty State */
           <div className="text-center py-20">
-            <Zap className="w-12 h-12 mx-auto text-cyan-400 mb-6" />
+            <div className="w-24 h-24 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Zap className="w-12 h-12 text-cyan-400" />
+            </div>
             <h3 className="text-2xl font-bold text-white mb-4">
-              {t("results.none", language)}
+              {language === 'fr' ? 'Aucun produit trouvé' : 'لم يتم العثور على منتجات'}
             </h3>
+            <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
+              {t('results').none}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => {
+                  setActiveCategory('all')
+                  setSearchQuery('')
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl font-bold text-white transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50"
+              >
+                {language === 'fr' ? 'Voir tous les produits' : 'عرض جميع المنتجات'}
+              </button>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="px-6 py-3 border-2 border-cyan-400/50 text-cyan-400 rounded-2xl font-bold backdrop-blur-sm transition-all duration-500 hover:bg-cyan-400/10 hover:border-cyan-400 hover:scale-105"
+              >
+                {language === 'fr' ? 'Effacer les filtres' : 'مسح الفلاتر'}
+              </button>
+            </div>
           </div>
         )}
 
+        {/* Featured Banner */}
+        {filteredProducts.length > 0 && (
+          <div className="mt-20 text-center">
+            <div className="bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 border border-cyan-400/20 rounded-3xl p-12 backdrop-blur-sm">
+              <h3 className="text-3xl sm:text-4xl font-black text-white mb-6">
+                {language === 'fr' 
+                  ? "Vous ne trouvez pas votre bonheur ?" 
+                  : "لم تجد ما تبحث عنه؟"
+                }
+              </h3>
+              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                {language === 'fr'
+                  ? "Nous créons des néons personnalisés selon vos envies. Contactez-nous pour discuter de votre projet !"
+                  : "نصنع لوحات نيون مخصصة حسب رغباتك. اتصل بنا لمناقشة مشروعك!"
+                }
+              </p>
+              <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl font-bold text-lg text-white transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50">
+                {language === 'fr' ? "Créer un néon personnalisé" : "إنشاء نيون مخصص"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
