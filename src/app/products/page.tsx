@@ -200,22 +200,25 @@ export default function ProductsPage() {
 
           {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-3">
-            {['all', ...categories].map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`group relative px-6 py-3 rounded-2xl font-semibold transition-all duration-500 ${
-                  activeCategory === category ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl shadow-cyan-500/30 scale-105' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
-                }`}
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  {activeCategory === category && <Sparkles className="w-4 h-4" />}
-                  {tCategory(category, language)}
-                </span>
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-              </button>
-            ))}
-          </div>
+  {['all', ...categories.filter(c => c !== 'all')].map((category) => (
+    <button
+      key={category}
+      onClick={() => setActiveCategory(category)}
+      className={`group relative px-6 py-3 rounded-2xl font-semibold transition-all duration-500 ${
+        activeCategory === category
+          ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl shadow-cyan-500/30 scale-105'
+          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+      }`}
+    >
+      <span className="relative z-10 flex items-center gap-2">
+        {activeCategory === category && <Sparkles className="w-4 h-4" />}
+        {tCategory(category, language)}
+      </span>
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+    </button>
+  ))}
+</div>
+
         </div>
 
         {/* Results */}

@@ -8,8 +8,8 @@ import { useLanguage } from '@/context/LanguageContext'
 const translations = {
   brand: {
     name: {
-      fr: "NeonGlow",
-      ar: "نيون جلو"
+      fr: "SaShop",
+      ar: "SaShop"
     },
     tagline: {
       fr: "Illuminez votre espace avec la magie du néon artisanal",
@@ -41,8 +41,15 @@ const translations = {
       fr: "Contactez-Nous",
       ar: "اتصل بنا"
     },
-    phone: "+212 611036342",
-    email: "contact@neonglow.com",
+    phone: {
+      fr:"+212 611036342",
+      ar:"+212611036342"
+    },
+    email:{
+      fr:"cont@sashop.com",
+      ar:"cont@sashop.com",
+    }, 
+    
     location: {
       fr: "Casablanca, Maroc",
       ar: "الدار البيضاء، المغرب"

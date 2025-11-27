@@ -66,7 +66,7 @@ export function Navbar() {
               <Sparkles className="w-8 h-8 text-cyan-400 animate-pulse" />
             </div>
             <span className="font-black text-3xl bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-             NeonGlow</span>
+             SaShop</span>
           </Link>
 
           {/* Desktop Menu */}
