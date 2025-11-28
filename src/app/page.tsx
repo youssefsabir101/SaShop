@@ -239,7 +239,8 @@ const translations: Translations = {
       fr: "Rejoignez des centaines de clients satisfaits",
       ar: "انضم إلى المئات من العملاء الراضين"
     }
-  }
+  },
+  
 }
 
 export default function Home() {
@@ -777,9 +778,11 @@ useEffect(() => {
       </section>
 
       {/* Featured Products - Asymmetric Layout */}
-      <section className="relative py-32">
+      <section className="relative pt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
+
+          {/* Title */}
+          <div className="text-center mb-10">
             <h2 className="text-5xl sm:text-6xl font-black mb-6">
               <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                 {t('featuredProducts')}
@@ -790,13 +793,13 @@ useEffect(() => {
             </p>
           </div>
 
-          {/* Category Filters - Modern Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {['all', ...categories].map((category) => (
+          {/* FIXED Category Filters - No Duplicate "All" */}
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                className={`px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30'
                     : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
@@ -807,21 +810,21 @@ useEffect(() => {
             ))}
           </div>
 
-          {/* Products Grid - Creative Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.slice(0, 6).map((product, index) => (
-              <div
-                key={product.id}
-                className={`transform transition-all duration-700 hover:scale-105 ${
-                  index % 3 === 0 ? 'lg:-rotate-1 hover:rotate-0' : 
-                  index % 3 === 1 ? 'lg:rotate-1 hover:rotate-0' : 
-                  'lg:-rotate-1 hover:rotate-0'
-                }`}
-              >
-                <ProductCard product={product} />
-              </div>
-            ))}
+          {/* FIXED Smaller Cards - All 6 Fit on Screen */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.slice(0, 8).map((product, index) => (
+                <div
+                  key={product.id}
+                  className="transform transition-all duration-700 hover:scale-102"
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
           </div>
+
+
 
           {/* View All Button */}
           <div className="text-center mt-16">
@@ -835,6 +838,7 @@ useEffect(() => {
           </div>
         </div>
       </section>
+
 
       {/* Why Choose Us - Interactive Cards */}
       <section className="relative py-32 bg-gradient-to-b from-black to-purple-900/20">

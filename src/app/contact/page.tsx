@@ -46,7 +46,6 @@ interface FormErrors {
 }
 
 interface Translations {
-  heroTitle: TranslationText;
   heroSubtitle: TranslationText;
   contactInfo: {
     phone: ContactInfo;
@@ -65,10 +64,6 @@ interface Translations {
 
 // Translations with proper typing
 const translations: Translations = {
-  heroTitle: {
-    fr: "Contactez-Nous",
-    ar: "اتصل بنا"
-  },
   heroSubtitle: {
     fr: "Prêt à illuminer votre espace ? Parlons de votre projet néon",
     ar: "مستعد لإضاءة مساحتك؟ لنتحدث عن مشروع النيون الخاص بك"
@@ -214,14 +209,9 @@ export default function ContactPage() {
         <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float-fast"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16 space-y-6">
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black mb-6 leading-none">
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-              CONTACT
-            </span>
-          </h1>
           <p className="text-2xl sm:text-3xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             {t('heroSubtitle')}
           </p>

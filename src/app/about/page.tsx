@@ -20,8 +20,8 @@ const translations = {
   },
   storyContent: {
     p1: {
-      fr: "NeonGlow est né d'une passion simple : rendre les décorations néon LED premium accessibles à tous. Ce qui a commencé comme un projet passion dans un petit atelier est devenu le leader marocain des néons artistiques.",
-      ar: "ولدت نيون جلو من شغف بسيط: جعل ديكورات النيون LED الفاخرة في متناول الجميع. ما بدأ كمشروع شغف في ورشة صغيرة أصبح الرائد المغربي في الأنوار النيون الفنية."
+      fr: "SaShop est né d'une passion simple : rendre les décorations néon LED premium accessibles à tous. Ce qui a commencé comme un projet passion dans un petit atelier est devenu le leader marocain des néons artistiques.",
+      ar: "ولدت SaShop من شغف بسيط: جعل ديكورات النيون الفاخرة في متناول الجميع. ما بدأ كمشروع شغف في ورشة صغيرة أصبح الرائد المغربي في الأنوار النيون الفنية."
     },
     p2: {
       fr: "Nous croyons que chaque espace mérite de briller. Qu'il s'agisse d'une chambre, d'un café, d'un bureau ou d'un studio créatif, nos décorations néon transforment les espaces ordinaires en expériences extraordinaires.",
@@ -51,8 +51,8 @@ const translations = {
     }
   },
   whyChooseUs: {
-    fr: "Pourquoi Choisir NeonGlow?",
-    ar: "لماذا تختار نيون جلو؟"
+    fr: "Pourquoi Choisir SaShop ?",
+    ar: "لماذا تختار SaShop ؟"
   },
   reasons: [
     { fr: "Produits néon de qualité premium", ar: "منتجات نيون بجودة فائقة" },
@@ -103,15 +103,10 @@ export default function AboutPage() {
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         {/* Hero Section */}
-        <div className="text-center mb-24 space-y-8">
+        <div className="text-center mb-10 space-y-8">
           <div className="relative inline-block">
-            <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black mb-6 leading-none">
-              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-                ABOUT
-              </span>
-            </h1>
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"></div>
           </div>
           <p className="text-2xl sm:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
